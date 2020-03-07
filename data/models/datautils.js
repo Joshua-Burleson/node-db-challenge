@@ -37,6 +37,10 @@ class DataTable {
             .del();
     }
 
+    get_dbTable(){
+        return this.dbTable();
+    }
+
 }
 
 class Exception extends Error {

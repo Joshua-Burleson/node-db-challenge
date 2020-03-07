@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const taskRouter = require('./tasks');
 const projects = require('../data/models/projectModel');
 const { Exception } = require('../data/models/datautils');
+
+router.use('/:id/tasks', taskRouter);
 
 router.get('/', async (req, res) => {
     try {
@@ -9,7 +12,19 @@ router.get('/', async (req, res) => {
         res.json(allProjects);
     }
     catch(exc) {
-        const handledException = exc.code ? exc : {code: 503, message: 'Something Went Wrong'}
+        const handledException = {code: 503, message: 'Something Went Wrong'}
+        res.status(handledException.code).json(handledException);
+    }
+
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const project = await projects.getByKey(req.params.id);
+        res.json(project);
+    }
+    catch(exc) {
+        const handledException = {code: 503, message: 'Something Went Wrong'}
         res.status(handledException.code).json(handledException);
     }
 
@@ -22,7 +37,7 @@ router.post('/', async (req, res) => {
         res.json(newProject);
     }
     catch(exc) {
-        const handledException = exc.code ? exc : {code: 503, message: 'Something Went Wrong'}
+        const handledException = {code: 503, message: 'Something Went Wrong'}
         console.log(handledException)
         res.status(handledException.code).json(handledException);
     }
