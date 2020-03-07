@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/Joshua-Burleson/node-db-challenge#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "knex": "^0.20.11",
     "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
