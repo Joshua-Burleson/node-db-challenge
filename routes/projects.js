@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const taskRouter = require('./tasks');
 const projects = require('../data/models/projectModel');
-const { Exception } = require('../data/models/datautils');
+const { Exception, db } = require('../data/models/datautils');
 
 router.use('/:id/tasks', taskRouter);
 
@@ -29,6 +29,34 @@ router.get('/:id', async (req, res) => {
     }
 
 });
+
+router.get('/:id/verbose', async (req, res) => {
+    try {
+        const project = await projects.getByKey(req.params.id);
+        const tasks = await db('task as t')
+                              .where({'t.project_id': req.params.id})
+                              .join('project as p', 'p.id', 't.project_id');
+
+        const resources = await db('resource_project as rP')
+                                  .where({'rP.project_id': req.params.id})
+                                  .join('resource as r', 'project as p', 'r.id', 'rP.resource_id')
+                                  .select('r.id', 'r.name', 'r.description');
+        
+        const completeProject = { ...project, tasks, resources}
+
+        res.json(completeProject);
+    }
+    catch(exc) {
+        console.log(exc)
+        const handledException = {code: 503, message: 'Something Went Wrong'}
+        res.status(handledException.code).json(handledException);
+    }
+})
+
+
+
+
+
 
 router.post('/', async (req, res) => {
     try {
