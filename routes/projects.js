@@ -41,7 +41,17 @@ router.get('/:id/verbose', async (req, res) => {
                                   .where({'rP.project_id': req.params.id})
                                   .join('resource as r', 'r.id', 'rP.resource_id')
         
-        const completeProject = { ...project, tasks, resources}
+        
+        
+        const completeProject = { 
+                                    ...project, completed: Boolean(project.completed), 
+
+                                    tasks: tasks.map( task => {
+                                            return { ...task, completed: Boolean(task.completed) }
+                                            }),
+                                            
+                                    resources
+                                }
 
         res.json(completeProject);
     }
