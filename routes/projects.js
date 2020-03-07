@@ -39,8 +39,7 @@ router.get('/:id/verbose', async (req, res) => {
 
         const resources = await db('resource_project as rP')
                                   .where({'rP.project_id': req.params.id})
-                                  .join('resource as r', 'project as p', 'r.id', 'rP.resource_id')
-                                  .select('r.id', 'r.name', 'r.description');
+                                  .join('resource as r', 'r.id', 'rP.resource_id')
         
         const completeProject = { ...project, tasks, resources}
 
